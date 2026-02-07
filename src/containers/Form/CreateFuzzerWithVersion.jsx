@@ -71,7 +71,7 @@ const CreateFuzzerWithVersion = ({ action }) => {
     try {
       dispatchFormsErrors({ type: "RESET" });
       if (
-        inputValueTmpfs <= limits?.ram_total - inputValueRAM &&
+        inputValueTmpfs <= (limits?.fuzzer_max_ram || limits?.ram_total) - inputValueRAM &&
         inputValueTmpfs >= ramMin - inputValueRAM
       ) {
         const fuzzerPropsForm = (({ name, description, lang, engine }) => ({
@@ -147,7 +147,7 @@ const CreateFuzzerWithVersion = ({ action }) => {
           payload: {
             common: t("form.hint.version.ram_total_limits_violated", {
               ramMin: ramMin,
-              ramMax: limits?.ram_total,
+              ramMax: limits?.fuzzer_max_ram || limits?.ram_total,
             }),
           },
         });
@@ -360,7 +360,7 @@ const CreateFuzzerWithVersion = ({ action }) => {
           <SliderInput
             setValue={setCPU}
             type="CPU"
-            limits={ {min_value: cpuMin, max_value: limits?.cpu_total}}
+            limits={limits?.cpu || {min_value: cpuMin, max_value: limits?.cpu_total}}
             {...(formsErrors.fieldName === "cpu" && {
               validateStatus: "error",
               help: formsErrors.wording,
@@ -369,7 +369,7 @@ const CreateFuzzerWithVersion = ({ action }) => {
           <SliderInput
             setValue={setRAM}
             type="RAM"
-            limits={{min_value: ramMin, max_value: limits?.ram_total}}
+            limits={limits?.ram || {min_value: ramMin, max_value: limits?.ram_total}}
             {...(formsErrors.fieldName === "ram" && {
               validateStatus: "error",
               help: formsErrors.wording,
