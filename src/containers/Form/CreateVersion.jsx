@@ -1,5 +1,4 @@
 import { UploadOutlined } from "@ant-design/icons";
-import { ramMin } from "../../config/constants";
 import {
   Alert,
   Button,
@@ -24,6 +23,7 @@ import {
   uploadSeeds,
   useAuthState,
 } from "../../context";
+import { ramMin, cpuMin, tmpfsMin, tmpfsMax } from "../../config/constants";
 import { formsErrorReducer } from "../../context/reducer";
 import generateNameByDate from "../../utilities/generateNameByDate";
 import getFormFieldTypeByError from "../../utilities/getFormFieldTypeByError";
