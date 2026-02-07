@@ -41,6 +41,10 @@ const SliderInputDependent = ({
   useEffect(() => {
     setValue(inputValue);
   }, []);
+  // Использовать fuzzer_max_ram если доступен, иначе ram_total для обратной совместимости
+  const maxRam = limitsAll?.fuzzer_max_ram || limitsAll?.ram_total || tmpfsMax;
+  const maxTmpfs = Math.min(max, maxRam - selectedRAM);
+  const minTmpfs = Math.max(min, ramMin - selectedRAM);
   return (
     <Col span={12}>
       <Item
@@ -60,9 +64,9 @@ const SliderInputDependent = ({
           // formatter={(e) => `${e} ${measurments}`}
           // parser={(e) => e.replace(` ${measurments}`, "")}
           //min={min}
-          min={Math.max(min, ramMin - selectedRAM)}
           //max={max}
-          max={Math.min(max, limitsAll?.ram_total - selectedRAM)}
+          min={minTmpfs}
+          max={maxTmpfs}
           step={step}
           value={inputValue}
           onChange={handleInput}
@@ -71,8 +75,8 @@ const SliderInputDependent = ({
       </Item>
 
       <Slider
-        min={min}
-        max={max}
+        min={minTmpfs}
+        max={maxTmpfs}
         //max={Math.min(max, limitsAll?.ram_total.max_value - selectedRAM)}
         style={{
           width: "220px",
