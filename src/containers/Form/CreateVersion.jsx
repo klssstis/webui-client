@@ -1,4 +1,5 @@
 import { UploadOutlined } from "@ant-design/icons";
+import { ramMin } from "../../config/constants";
 import {
   Alert,
   Button,
@@ -55,8 +56,8 @@ const CreateVersion = ({ action, fuzzer, lastImage }) => {
     try {
       dispatchFormsErrors({ type: "RESET" });
       if (
-        inputValueTmpfs <= limits?.ram_total.max_value - inputValueRAM &&
-        inputValueTmpfs >= limits?.ram_total.min_value - inputValueRAM
+        inputValueTmpfs <= limits?.ram_total - inputValueRAM &&
+        inputValueTmpfs >= ramMin - inputValueRAM
       ) {
         let newVersionId = await createVersion(userDetails, fuzzer.id, {
           name: formValues.name,
@@ -98,8 +99,8 @@ const CreateVersion = ({ action, fuzzer, lastImage }) => {
           type: "SET_COMMON",
           payload: {
             common: t("form.hint.version.ram_total_limits_violated", {
-              ramMin: limits?.ram_total.min_value,
-              ramMax: limits?.ram_total.max_value,
+              ramMin: ramMin,
+              ramMax: limits?.ram_total,
             }),
           },
         });
@@ -258,7 +259,7 @@ const CreateVersion = ({ action, fuzzer, lastImage }) => {
           <SliderInput
             setValue={setCPU}
             type="CPU"
-            limits={limits?.cpu}
+            limits={limits?.cpu || {min_value: cpuMin, max_value: limits?.cpu_total}}
             {...(formsErrors.fieldName === "cpu" && {
               validateStatus: "error",
               help: formsErrors.wording,
@@ -267,7 +268,7 @@ const CreateVersion = ({ action, fuzzer, lastImage }) => {
           <SliderInput
             setValue={setRAM}
             type="RAM"
-            limits={limits?.ram}
+            limits={limits?.ram || {min_value: ramMin, max_value: limits?.ram_total}}
             {...(formsErrors.fieldName === "ram" && {
               validateStatus: "error",
               help: formsErrors.wording,
