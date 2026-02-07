@@ -1,6 +1,7 @@
 import { message } from "antd";
 import axios from "axios";
 import i18n from "i18next";
+import { ramMin, cpuMin } from "../config/constants";
 import AuthApi from "../services/openapi/src/api/AuthApi";
 import CrashesApi from "../services/openapi/src/api/CrashesApi";
 import FuzzersApi from "../services/openapi/src/api/FuzzersApi";
@@ -442,7 +443,24 @@ export const getFuzzerLimits = wrapper(async (userDetails) => {
     const { userId, userProjectId } = userDetails;
     let resp = await apiCall.getProject(userId, userProjectId);
     let pool = await apiCallPool.getPool(userId, resp.pool_id );
-    return pool.resources;
+    // Преобразование структуры данных из API в формат, ожидаемый компонентами
+    const resources = pool.resources;
+    return {
+      cpu: {
+        min_value: cpuMin,
+        max_value: resources.fuzzer_max_cpu || resources.cpu_total
+      },
+      ram: {
+        min_value: ramMin,
+        max_value: resources.fuzzer_max_ram || resources.ram_total
+      },
+      cpu_total: resources.cpu_total,
+      ram_total: resources.ram_total,
+      fuzzer_max_cpu: resources.fuzzer_max_cpu,
+      fuzzer_max_ram: resources.fuzzer_max_ram,
+      nodes_avail: resources.nodes_avail,
+      nodes_total: resources.nodes_total
+    };
   } catch (error) {
     return error;
   }
